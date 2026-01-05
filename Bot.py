@@ -1,8 +1,12 @@
+import os
+import json
 import logging
 import random
 from datetime import datetime
+
 import gspread
-from oauth2client.service_account import ServiceAccountCredentials
+from google.oauth2.service_account import Credentials
+
 from telegram import Update
 from telegram.ext import (
     ApplicationBuilder,
@@ -12,9 +16,15 @@ from telegram.ext import (
     filters,
 )
 
+
 # CONFIGURACIÓN GOOGLE SHEETS
-scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-creds = ServiceAccountCredentials.from_json_keyfile_name("credenciales.json", scope)
+scopes = [
+    "https://www.googleapis.com/auth/spreadsheets",
+    "https://www.googleapis.com/auth/drive",
+]
+
+creds_info = json.loads(os.getenv("GOOGLE_CREDENTIALS_JSON"))
+creds = Credentials.from_service_account_info(creds_info, scopes=scopes)
 client = gspread.authorize(creds)
 sheet = SHEET_ID = "1zyJ4yYBauBQuPoZvEEpuZRb-TB9pTHwlxi4H31nGVr0"
 sheet = client.open_by_key(SHEET_ID).worksheet("Es la que va")
